@@ -1,0 +1,134 @@
+{% extends "layout2.html" %}
+
+{% block head%}
+<script>
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [label]);
+    });
+
+    $('.btn-file :file').on('fileselect', function (event, label) {
+
+        var input = $(this).parents('.input-group').find(':text'),
+            log = label;
+
+        if (input.length) {
+            input.val(log);
+        } else {
+            if (log) alert(log);
+        }
+
+    });
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#img-upload').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgInp").change(function () {
+        readURL(this);
+    });
+</script>
+{% endblock head%}
+
+{% block obsah %}
+ <div class="content-section">
+    <form method="post" action="" enctype="multipart/form-data" >
+        {{ form.hidden_tag() }}
+        <div class="form-row">
+            <div class="form-group col">               
+               <img class="img-responsive avatar-view" id='img-upload' src="/static/images/default.jpg" />              
+            </div>
+            <div class="form-group col">
+                <label>Upload Logo</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            Browse...
+                            <!--<input type="file" id="imgInp">-->
+                            {{ form.Logo(class="form-control-file")}}
+                        </span>
+                    </span>
+                    <input type="text" class="form-control" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form.Name.label(class="form-control-label")}}
+
+            {% if form.Name.errors %}
+            {{ form.Name(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.Name.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.Name(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.Since.label(class="form-control-label")}}
+
+            {% if form.Since.errors %}
+            {{ form.Since(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.Since.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.Since(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.Date_Of.label(class="form-control-label")}}
+
+            {% if form.Date_Of.errors %}
+            {{ form.Date_Of(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.Date_Of.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.Date_Of(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>      
+        <div class="form-group">
+            {{ form.Submit(class="btn btn-outline-info")}}
+        </div>
+    </form>
+</div>
+<style>
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        background: white;
+        cursor: inherit;
+        display: block;
+    }
+    #img-upload {
+        width: 20%;
+    }
+</style>
+{% endblock obsah %}
