@@ -4,13 +4,13 @@
     <h2>Clubs</h2>
     {% for club in clubs %}
     <div class="media" id="club_{{ club.id_club }}">
-        <img  id="ImgLogo" class="rouded-circle account-img" src="{{ url_for('club_logo', id=club.Id_Club) }}" />
+        <img  id="ImgLogo" class="rouded-circle account-img" src="{{ url_for('club_logo', clubId=club.Id_Club) }}" />
         <div class="media-body" id="club_media_{{ club.Id_Club }}">
             <h1>{{ club.Name }}</h1>
             <p class="text-secondary">Since: {{ club.Since }}</p>
         </div>
         <div>
-        	<button name="btnAdd" onclick="window.location.href='{{ url_for('createteam', clubId=club.Id_Clul) }}'">Založit tým</button>           
+          <button name="btnAdd"  onclick="window.location.href='{{ url_for('createteam', clubId=club.Id_Club) }}'">Create team</button>  
         </div>
         <table class="table table-striped table-hover">
             <thead>
