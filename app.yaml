@@ -19,6 +19,8 @@ libraries:
   version: latest 
 - name: ssl
   version: latest
+- name: MySQLdb
+  version: latest
 
 beta_settings:
     cloud_sql_instances: aerial-chimera-211120:europe-west2:sporteventdb
