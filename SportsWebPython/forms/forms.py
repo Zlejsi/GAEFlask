@@ -48,5 +48,5 @@ class EventForm(FlaskForm):
     Description = TextAreaField('Description')
     #Date_Start = DateField('Date Start',format="%d.%m.%Y",default=datetime.today)
     #Date_End = DateField('Date End',format="%d.%m.%Y")
-    Submit = SubmitField('Create Person')
+    Submit = SubmitField('Edit Event')
 

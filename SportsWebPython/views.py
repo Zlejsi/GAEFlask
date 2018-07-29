@@ -3,6 +3,8 @@ Routes and views for the flask application.
 """
 import uuid
 from datetime import datetime
+import dateutil.parser
+import json
 from flask import render_template,redirect,url_for,request,jsonify,flash
 from SportsWebPython import app,db
 from SportsWebPython.models.models import User,Clubs,Persons,Events,Teams,Members
@@ -216,3 +218,77 @@ def addteammembers(teamId):
 
     #    return json.dumps(event.to_dict())
     return json.dumps([])
+
+@app.route('/calendar', methods=['GET','POST'])
+def calendar():
+    """Renders the calendar page."""
+    #event = Events(Id_Team=1,Subject='Prvni trenink',Date_Start=datetime.utcnow)
+
+
+    return render_template(
+        'calendar.html',
+        title='Calendar'
+    )
+
+@app.route('/events', methods=['GET','POST'])
+def events():
+    """Renders the calendar page."""
+    #event = Events(Id_Team=1,Subject='Prvni trenink',Date_Start=datetime.utcnow())
+    events = Events.query.all()
+    dict3 = []
+    for event in events:
+        dict = event.to_dict()
+        dict.update({'title': dict['Subject'],'start':dict['Date_Start'], 'id': dict['Id_Event'],'end':dict['Date_End']})
+        if event.Id_Team == 1:
+            dict.update({'backgroundColor':'red'})
+        else: 
+            dict.update({'backgroundColor':'blue'}) 
+        dict3.append(dict)
+
+    return json.dumps(dict3)
+
+@app.route('/local/event/', methods=['GET','POST'])
+def addevent():
+    """Renders the event modal page."""
+    #event = Events.query.filter_by(Id_Event=uid).first()
+    form = EventForm()
+    data_type='Add Event'
+    teams = Teams.query.all()
+
+    if (request.method == 'POST'):
+        event = Events(UID = uuid.uuid4(), Id_Team = 1, Subject = request.form['Subject'],Description = request.form['Description'], Date_Start = dateutil.parser.parse(request.form['Date_Start']))
+        db.session.add(event);
+        db.session.commit();
+
+        return json.dumps(event.to_dict())
+    return render_template(
+        'event.html',
+        title='Add event', form=form,data_type=data_type, teams=teams
+    )
+    
+@app.route('/local/event/<string:uid>', methods=['GET','POST'])
+def editevent(uid):
+    """Renders the event modal page."""
+    event = Events.query.filter_by(Id_Event=uid).first()
+    form = EventForm(obj=event)
+    data_type='Update Event'
+    teams = Teams.query.all()
+    if (request.method == 'POST'):
+        if 'Subject' in request.form:
+            event.Subject = request.form['Subject'];
+        if 'Description' in request.form:
+            event.Descrition = request.form['Description'];
+        if 'Date_Start' in request.form:
+            event.Date_Start = dateutil.parser.parse(request.form['Date_Start']);
+        if 'Date_End' in request.form:
+            event.Date_End = dateutil.parser.parse(request.form['Date_End']);
+        if 'teamId' in request.form:
+            event.Id_Team = request.form['teamId'];
+        db.session.add(event);
+        db.session.commit();
+
+        return json.dumps(event.to_dict())
+    return render_template(
+        'event.html',
+        title='Update event', form = form,event=event,data_type=data_type, teams=teams
+    )

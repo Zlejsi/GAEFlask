@@ -4,4 +4,4 @@ Flask-SqlAlchemy
 Flask-BCrypt
 PyMysql
 Flask-wtf
-mysql-python
+python-dateutil
