@@ -1,0 +1,175 @@
+{% extends "layout2.html" %}
+
+{% block head%}
+<script>
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [label]);
+    });
+
+    $('.btn-file :file').on('fileselect', function (event, label) {
+
+        var input = $(this).parents('.input-group').find(':text'),
+            log = label;
+
+        if (input.length) {
+            input.val(log);
+        } else {
+            if (log) alert(log);
+        }
+
+    });
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#img-upload').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgInp").change(function () {
+        readURL(this);
+    });
+</script>
+{% endblock head%}
+
+{% block obsah %}
+
+<div class="content-section">
+    <form method="post" action="" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-row">
+            <div class="form-group col">
+                {% if person %}
+                    <img class="img-responsive avatar-view" id='img-upload' src="{{ url_for('person_photo', personId=person.Id_Person) }}" /> 
+                {% else %}
+                    <img class="img-responsive avatar-view" id='img-upload' src="/static/images/default.jpg" />
+                {% endif %}
+            </div>
+            <div class="form-group col">
+                <label>Upload Photo</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            Browse...
+                            <!--<input type="file" id="imgInp">-->
+                            {{ form.Photo(class="form-control-file")}}
+                        </span>
+                    </span>
+                    <input type="text" class="form-control" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form.First_name.label(class="form-control-label")}}
+
+            {% if form.First_name.errors %}
+                {{ form.First_name(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.First_name.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+                {{ form.First_name(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.Second_name.label(class="form-control-label")}}
+
+            {% if form.Second_name.errors %}
+                {{ form.Second_name(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.Second_name.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+                {{ form.Second_name(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.Surname.label(class="form-control-label")}}
+
+            {% if form.Surname.errors %}
+            {{ form.Surname(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.Surname.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.Surname(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.Email.label(class="form-control-label")}}
+
+            {% if form.Email.errors %}
+            {{ form.Email(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.Email.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.Email(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.Weight.label()}}
+            {{ form.Weight(class="form-control-number")}}
+            {% if form.Weight.errors %}
+            {% for error in form.Weight.errors %}
+            <span class="text-danger">{{ error }}</span><br />
+            {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.Height.label()}}
+            {{ form.Height(class="form-control-number")}}
+            {% if form.Height.errors %}
+            {% for error in form.Height.errors %}
+            <span class="text-danger">{{ error }}</span><br />
+            {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.Submit(class="btn btn-outline-info")}}
+        </div>
+    </form>
+</div>
+
+<style>
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+
+    #img-upload {
+        width: 20%;
+    }
+</style>
+{% endblock obsah %}

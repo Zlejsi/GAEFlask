@@ -1,0 +1,41 @@
+﻿{% extends "layout2.html" %}
+
+{% block obsah %}
+
+<div class="content-section">
+    <form method="post" action="">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.Name.label(class="form-control-label")}}
+            {% if form.Name.errors %}
+            {{ form.Name(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.Name.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.Name(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.Date_Of.label(class="form-control-label")}}
+
+            {% if form.Date_Of.errors %}
+            {{ form.Date_Of(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.Date_Of.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+            {{ form.Date_Of(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.Submit(class="btn btn-outline-info")}}
+        </div>
+    </form>
+</div>
+
+{% endblock %}

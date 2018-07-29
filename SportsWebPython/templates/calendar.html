@@ -1,0 +1,203 @@
+{% extends "layout2.html" %}
+
+
+{% block head%}
+<script>
+    //$(document).ready(function() {
+    $('#calendar').fullCalendar({
+        header: { center: 'month,agendaWeek' },
+        locale: 'cs',
+        views: {
+            month: { // name of view
+                titleFormat: 'YYYY, MM, DD'
+                // other view-specific options here
+            },
+            agendaWeek: {
+                titleFormat: 'YYYY, MM, DD',
+                allDayText: 'Celodenni'               
+            }
+        },
+        timeFormat: 'H:mm',
+        defaultDate: '2018-07-19',
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        events: {
+            url: '{{ url_for("events") }}',
+            error: function () {
+                $('#script-warning').show();
+            }
+        },
+        eventClick: function (eventObj) {
+            if (eventObj.url) {
+                alert(
+                    'Clicked ' + eventObj.title + '.\n' +
+                    'Will open ' + eventObj.url + ' in a new tab'
+                );
+
+                window.open(eventObj.url);
+
+                return false; // prevents browser from following link in current tab.
+            } else {
+                var myurl = '{{ url_for("editevent",uid="eventObj.UID") }}'.replace('eventObj.UID', eventObj.id);
+                //alert(myurl);
+                    
+                //$('#CalenderModalEdit').modal('show');
+                $.get(myurl, function (data) {
+                    //alert(data);                       
+                    $('#CalenderModalEdit .modal-content').html(data);
+                    $('#CalenderModalEdit').modal('show');
+
+                    $('#Submit').click(function (event) {
+                        //alert($('#Subject').data)
+                        event.preventDefault();
+                        $.ajax({
+                            url: myurl,
+                            type: 'post',                               
+                            data: $('#antoform2').serialize()  + "&teamId="+$("#TeamName").val(), 
+                            success: function (result) {                                    
+                                $('#CalenderModalEdit').modal('hide');
+                                $('#calendar').fullCalendar('refetchEvents');
+                            }
+                        });
+                           
+                        //data2 = $('#antoform2').serialize();                        
+                        //$.post(myurl, data = data2, function (data) {
+                        //    alert(data2);
+                        //    $('#CalenderModalEdit').modal('hide');
+                        //});
+                            
+                    });
+                                   
+                });
+                //window.location.href = myurl;
+                //alert('Clicked ' + eventObj.title);
+            }
+        },
+        dayClick: function (date, jsEvent, view) {
+            var myurl = '{{ url_for("addevent") }}';
+            //alert('clicked ' + date.format() + ' on resource ');
+            $.get(myurl, function (data) {
+                //alert(data);                       
+                $('#CalenderModalEdit .modal-content').html(data);                   
+                $('#CalenderModalEdit').modal('show');
+
+                $('#Submit').click(function (event) {
+                    //alert($('#Subject').data)
+                    event.preventDefault();                       
+                    //alert(formdata);
+                    $.ajax({
+                        url: myurl,
+                        type: 'post',
+                        data: $('#antoform2').serialize() + "&Date_Start="+date.format()+"&teamId="+$("#TeamName").val(),
+                        success: function (result) {
+                            $('#CalenderModalEdit').modal('hide');
+                            $('#calendar').fullCalendar('refetchEvents');
+                        }
+                    });
+
+                    //data2 = $('#antoform2').serialize();                        
+                    //$.post(myurl, data = data2, function (data) {
+                    //    alert(data2);
+                    //    $('#CalenderModalEdit').modal('hide');
+                    //});
+
+                });
+
+            });
+        },
+        eventDrop: function (event, delta, revertFunc) {
+            var myurl = '{{ url_for("editevent",uid="eventObj.UID") }}'.replace('eventObj.UID', event.id);
+            $.ajax({
+                url: myurl,
+                type: 'post',
+                data: $('#antoform2').serialize() + "&Date_Start=" + event.start.format(),
+                success: function (result) {
+                    $('#calendar').fullCalendar('refetchEvents');
+                }
+            });
+            //alert(event.id + " was dropped on " + event.start.format());
+
+            //if (!confirm("Are you sure about this change?")) {
+            //    revertFunc();
+            //}
+
+        },
+        eventResize: function (event, delta, revertFunc) {
+            var myurl = '{{ url_for("editevent",uid="eventObj.UID") }}'.replace('eventObj.UID', event.id);
+            $.ajax({
+                url: myurl,
+                type: 'post',
+                data: $('#antoform2').serialize() + "&Date_End=" + event.end.format(),
+                success: function (result) {                  
+                    $('#calendar').fullCalendar('refetchEvents');
+                }
+            });
+            //alert(event.id + " end is now " + event.end.format());
+        }
+           
+    });
+    //});
+
+</script>
+{% endblock head%}
+
+{% block obsah %}
+
+<!-- page content -->
+
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Calendar <small>Click to add/edit events</small></h3>
+        </div>
+        <div class="title_right">
+            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Calendar Events <small>Sessions</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#">Settings 1</a>
+                                </li>
+                                <li>
+                                    <a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div id='calendar'></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- /page content -->
+
+{% endblock %}

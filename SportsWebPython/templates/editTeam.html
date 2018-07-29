@@ -1,0 +1,68 @@
+{% extends "layout2.html" %}
+
+{% block head %}
+<script>
+    $('#btnAddMember').click(function (event) {
+        event.preventDefault();
+        //$('#MemberModalAdd .modal-content').html(data);
+        var myurl = '{{ url_for("addmember",teamId=team.Id_Team) }}';
+        $.get(myurl, function (data) {
+            //alert(data);                       
+            $('#MemberModalAdd .modal-content').html(data);
+            $('#MemberModalAdd').modal('show');
+
+         
+        });
+        //$.ajax({
+        //    url: myurl,
+        //    type: 'post',
+        //    data: $('#antoform2').serialize() + "&Date_Start="+date.format(),
+        //    success: function (result) {
+        //        $('#MemberModalAdd').modal('hide');
+        //    }
+        //});
+
+ });
+</script>
+{% endblock head%}
+
+{% block obsah %}
+<h2>Team</h2>
+  
+<div class="media" id="team_{{ team.Id_Team }}">
+    <div class="media-body" id="club_media_{{ team.Id_Team }}">
+        <h1>{{ team.Name }}</h1>
+    </div>
+    <div>
+        <button name="btnAdd" id="btnAddMember">Add member</button>
+    </div>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nicname</th>
+                <th>First name</th>
+                <th>Second name</th>
+                <th>Surname</th>
+                <th>Position</th>
+                <th colspan="2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in team.members %}
+            <tr>
+                <th scope="row">1</th>
+                <td>{{ member.Nickname }}</td>
+                <td>{{ member.person.First_name}}</td>
+                <td>{{ member.person.Second_name}}</td>
+                <td>{{ member.person.Surname}}</td>
+                <td>{{ member.position.Name}}</td>
+                <td><button class="btn btn-primary">Edit</button></td>
+                <td><button class="btn btn-danger">Remove</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

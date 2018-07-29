@@ -1,0 +1,47 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+    <h4 class="modal-title" id="myModalLabel2">Edit Calendar Entry</h4>
+</div>
+<div class="modal-body">
+    <div id="testmodal2" style="padding: 5px 20px;">
+        <form id="antoform2" class="form-horizontal calender" role="form">
+        	<div class="form-group">
+        		<label class="col-sm-3 control-label">Team name</label>
+        		<div class="col-sm-9">
+        			<select id="TeamName" class="form-control">
+        			{% for team in teams %}
+        			    {% if event %}
+        			    	{% if team.Id_Team == event.Id_Team %}
+    							<option value="{{ team.Id_Team }}" selected>{{ team.Name }}</option>
+    						{% else %}
+    							<option value="{{ team.Id_Team }}">{{ team.Name }}</option>
+    						{% endif %}
+    					{% else %}
+    						<option value="{{ team.Id_Team }}">{{ team.Name }}</option>	
+    					{% endif %}
+   					{% endfor %}
+					</select>
+				</div>
+        	</div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Subject</label>
+                <div class="col-sm-9">
+                    {{ form.Subject(class="form-control form-control-lg") }}
+                    <!--<input type="text" class="form-control" id="title2" name="title2">-->
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Description</label>
+                <div class="col-sm-9">
+                    {{ form.Description(class="form-control form-control-lg") }}
+                    <!--<textarea class="form-control" style="height:55px;" id="descr2" name="descr"></textarea>-->
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    {{ form.Submit(class="btn btn-outline-info")}}
+    <!--<button type="button" class="btn btn-default antoclose2" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary antosubmit2">Save changes</button>-->
+</div>
